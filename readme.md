@@ -25,6 +25,14 @@
 #### pdo_pgsql
 - PDO Driver for PostgreSQL: enabled
 - PostgreSQL (libpq):	18.2
+#### symfony/dependency-injection 7.4
+#### symfony/config 7.4
+#### symfony/yaml 7.4
+#### symfony/dotenv 7.4
+#### doctrine/migrations 3.9
+#### doctrine/dbal 4.4
+#### symfony/routing 7.4
+#### symfony/http-foundation 7.4
 
 ### Migrations:
 
