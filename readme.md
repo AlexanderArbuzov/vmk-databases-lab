@@ -20,11 +20,11 @@
 
 ### Requirements:
 
+#### PHP 8.5
 #### Apache 2.4.58
 #### pdo_pgsql
 - PDO Driver for PostgreSQL: enabled
 - PostgreSQL (libpq):	18.2
-#### PHP 8.5
 #### symfony/dependency-injection 7.4
 #### symfony/config 7.4
 #### symfony/yaml 7.4
