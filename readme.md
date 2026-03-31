@@ -26,5 +26,5 @@
 
 ### Migrations:
 
-"vendor/bin/doctrine-migrations migrate" or<br><br>
+"vendor/bin/doctrine-migrations migrate" or<br>
 "vendor/bin/doctrine-migrations migrate 'App\Migrations\Version...'"
