@@ -20,8 +20,8 @@
 
 ### Requirements:
 
-#### PHP 8.5
 #### Apache 2.4.58
+#### PHP 8.5
 #### pdo_pgsql
 - PDO Driver for PostgreSQL: enabled
 - PostgreSQL (libpq):	18.2
