@@ -23,3 +23,8 @@
 #### pdo_pgsql
 - PDO Driver for PostgreSQL: enabled
 - PostgreSQL (libpq):	18.2
+
+### Migrations:
+
+#### "vendor/bin/doctrine-migrations migrate" or
+#### "vendor/bin/doctrine-migrations migrate 'App\Migrations\Version...'"
