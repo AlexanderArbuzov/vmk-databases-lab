@@ -1,0 +1,25 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  App\:
+    resource: '../src/*'
+    exclude:
+      - '../src/Domain/'
+      - '../src/Presentation/Views/'
+      - '../src/Migrations/'
+
+  PDO:
+    class: PDO
+    arguments:
+      - '%database_dsn%'
+      - '%database_user%'
+      - '%database_password%'
+    calls:
+      - [ setAttribute, [ !php/const PDO::ATTR_ERRMODE, !php/const PDO::ERRMODE_EXCEPTION ] ]
+      - [ setAttribute, [ !php/const PDO::ATTR_DEFAULT_FETCH_MODE, !php/const PDO::FETCH_ASSOC ] ]
+
+  App\Domain\Store\IProductRepository: '@App\Infrastructure\Store\Sql\PDOProductRepository'
+  App\Domain\Store\IOrderRepository: '@App\Infrastructure\Store\Sql\PDOOrderRepository'

@@ -1,0 +1,10 @@
+**/.DS_Store
+
+/vendor/
+
+.env
+
+/src/Migrations/Version20260326120944.php
+/src/Migrations/Version20260327152825.php
+
+.idea/
