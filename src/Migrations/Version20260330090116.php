@@ -20,7 +20,7 @@ final class Version20260330090116 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql(<<<'SQL'
-            CREATE FUNCTION updateOrderTotalSum() RETURNS trigger
+            CREATE FUNCTION update_order_total_sum() RETURNS trigger
             AS $$
             BEGIN
                 UPDATE orders
@@ -37,7 +37,7 @@ final class Version20260330090116 extends AbstractMigration
             CREATE TRIGGER trg_order_items_insert
             AFTER INSERT ON order_items
             FOR EACH ROW
-            EXECUTE FUNCTION updateOrderTotalSum();
+            EXECUTE FUNCTION update_order_total_sum();
         SQL
         );
 
@@ -49,26 +49,28 @@ final class Version20260330090116 extends AbstractMigration
                 emp_edu_degree INTEGER;
                 role_is_adult BOOLEAN;
                 role_min_edu_degree INTEGER;
+                emp_edu_degree_name VARCHAR(255);
+                role_min_edu_degree_name VARCHAR(255);
             BEGIN
-                SELECT s.birthday, ed.mapping
-                INTO emp_birthday, emp_edu_degree
+                SELECT s.birthday, ed.mapping_key, ed.name
+                INTO emp_birthday, emp_edu_degree, emp_edu_degree_name
                 FROM staff s
-                JOIN education_degrees ed ON s.education_degree = ed.id
+                INNER JOIN education_degrees ed ON s.education_degree_mapping_key = ed.mapping_key
                 WHERE s.id = NEW.employee_id;
 
-                SELECT r.is_adult, ed.mapping
-                INTO role_is_adult, role_min_edu_degree
+                SELECT r.is_adult, ed.mapping_key, ed.name
+                INTO role_is_adult, role_min_edu_degree, role_min_edu_degree_name
                 FROM roles r
-                JOIN education_degrees ed ON r.education_degree_mapping = ed.id
+                INNER JOIN education_degrees ed ON r.education_degree_mapping_key = ed.mapping_key
                 WHERE r.id = NEW.role_id;
             
                 IF role_is_adult AND emp_birthday > (CURRENT_DATE - INTERVAL '18 years') THEN
-                   RAISE EXCEPTION 'ОШИБКА: Роль требует 18+, а сотруднику меньше.';
+                   RAISE EXCEPTION 'Выбранная должность доступна только лицам достигшим возраста совершеннолетия.';
                 END IF;
             
-                IF emp_edu_rank < role_min_edu_degree THEN
-                   RAISE EXCEPTION 'ОШИБКА: Уровень образования сотрудника (ранг %) ниже требуемого (ранг %).', 
-                   emp_edu_rank, role_min_edu_rank;
+                IF emp_edu_degree < role_min_edu_degree THEN
+                   RAISE EXCEPTION 'Уровень образования кандидата (%) не соответствует выбранной должности (%).', 
+                   emp_edu_degree_name, role_min_edu_degree_name;
                 END IF;
             
                 RETURN NEW;
@@ -80,13 +82,14 @@ final class Version20260330090116 extends AbstractMigration
         $this->addSql(<<<'SQL'
             CREATE TRIGGER trg_before_insert_staff_role
             BEFORE INSERT OR UPDATE ON staff_roles
-            FOR EACH ROW EXECUTE FUNCTION check_staff_role_req();
+            FOR EACH ROW
+            EXECUTE FUNCTION check_staff_role_req();
         SQL);
     }
     public function down(Schema $schema): void
     {
         $this->addSql('DROP TRIGGER IF EXISTS trg_order_items_insert ON order_items;');
-        $this->addSql('DROP FUNCTION IF EXISTS updateOrderTotalSum();');
+        $this->addSql('DROP FUNCTION IF EXISTS update_order_total_sum();');
         $this->addSql('DROP TRIGGER IF EXISTS trg_before_insert_staff_role ON staff_roles;');
         $this->addSql('DROP FUNCTION IF EXISTS check_staff_role_req();');
     }
